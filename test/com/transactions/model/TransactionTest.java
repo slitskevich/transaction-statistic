@@ -7,6 +7,9 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.transactions.model.Transaction;
+import com.transactions.model.ValidationException;
+
 public class TransactionTest {
 	
 	@Test
@@ -24,9 +27,7 @@ public class TransactionTest {
 	@Test
 	public void testInvalidAmount() {
 		try {
-			Transaction tested = new Transaction();
-			tested.setTimestamp((new Date()).getTime());
-			tested.setAmount(new Double(-1.0));
+			Transaction tested = new Transaction((new Date()).getTime(), -1.0);
 			tested.validate();
 			fail("Expected to fail");
 		} catch (Exception ex) {
@@ -49,9 +50,7 @@ public class TransactionTest {
 	@Test
 	public void testInvalidTimestamp() {
 		try {
-			Transaction tested = new Transaction();
-			tested.setAmount(1.0);
-			tested.setTimestamp(-1L);
+			Transaction tested = new Transaction(-1, 1.0);
 			tested.validate();
 			fail("Expected to fail");
 		} catch (Exception ex) {

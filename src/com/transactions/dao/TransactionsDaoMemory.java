@@ -1,9 +1,7 @@
 package com.transactions.dao;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.transactions.data.History;
+import com.transactions.model.Statistic;
 import com.transactions.model.Transaction;
 
 /**
@@ -12,13 +10,12 @@ import com.transactions.model.Transaction;
  */
 public class TransactionsDaoMemory implements TransactionsDao {
 
-	/** The list. */
-	private List<Transaction> list = Collections.synchronizedList(new ArrayList<Transaction>());
-	
 	private static Object mutex = new Object();
 	
 	/** The instance. */
 	private static TransactionsDaoMemory instance = null;
+	
+	private History history = new History(60);
 
 	/**
 	 * Instantiates a new transactions dao memory.
@@ -47,47 +44,26 @@ public class TransactionsDaoMemory implements TransactionsDao {
 	 * Resets all the stored data
 	 */
 	public void reset() {
-		synchronized(list) {
-			list.clear();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see com.transactions.dao.TransactionsDao#loadAll()
-	 */
-	@Override
-	public synchronized List<Transaction> loadAll() {
-		synchronized (list) {
-			return list;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see com.transactions.dao.TransactionsDao#loadForPeriod(long)
-	 */
-	@Override
-	public synchronized List<Transaction> loadForPeriod(long periodStartTimestamp) {
-		synchronized (list) {
-			List<Transaction> result = new ArrayList<Transaction>(list.size());
-			for (Transaction next : list) {
-				if (next.getTimestamp() >= periodStartTimestamp) {
-					result.add(next);
-				}
-			}
-			return result;
-		}
+		history.reset();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.transactions.dao.TransactionsDao#create(com.transactions.model.Transaction)
 	 */
 	@Override
-	public synchronized void create(Transaction transaction) throws CloneNotSupportedException {
-		synchronized (list) {
-			Transaction clone = transaction.clone();
-			clone.setId(list.size());
-			list.add(clone);
-		}
+	public boolean create(Transaction transaction) throws CloneNotSupportedException {
+		return history.update(transaction);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see com.transactions.dao.TransactionsDao#getMinuteStatistic()
+	 */
+	@Override
+	public Statistic getMinuteStatistic() {
+		return history.getMinuteStatistic();
+	}
+	
+	History getHistory() {
+		return history;
+	}
 }

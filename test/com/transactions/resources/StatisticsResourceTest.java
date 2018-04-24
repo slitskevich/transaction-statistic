@@ -1,6 +1,7 @@
 package com.transactions.resources;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.Date;
@@ -25,15 +26,11 @@ public class StatisticsResourceTest {
 
 	@Test
 	public void testNoData() {
-		Transaction t1 = new Transaction();
-		t1.setAmount(1.0);
-		t1.setTimestamp((new Date()).getTime() - 10 * 60 * 1000);
-		
 		try {
-			dao.create(t1);
+			assertFalse(dao.create(new Transaction((new Date()).getTime() - 10 * 60 * 1000, 1.0)));
 			Statistic result = (Statistic) tested.getPastMinute().getEntity();
 			assertEquals(new Double(0.0), new Double(result.getSum()));
-			assertEquals(new Double(0.0), new Double(result.getAverage()));
+			assertEquals(new Double(0.0), new Double(result.getAvg()));
 			assertEquals(new Double(0.0), new Double(result.getMin()));
 			assertEquals(new Double(0.0), new Double(result.getMax()));
 			assertEquals(0, result.getCount());
@@ -45,20 +42,12 @@ public class StatisticsResourceTest {
 	@Test
 	public void testValidData() {
 		long now = (new Date()).getTime();
-
-		Transaction t1 = new Transaction();
-		t1.setAmount(1.0);
-		t1.setTimestamp(now);
-		Transaction t2 = new Transaction();
-		t2.setAmount(2.0);
-		t2.setTimestamp(now);
-		
 		try {
-			dao.create(t1);
-			dao.create(t2);
+			dao.create(new Transaction(now, 1.0));
+			dao.create(new Transaction(now, 2.0));
 			Statistic result = (Statistic) tested.getPastMinute().getEntity();
 			assertEquals(new Double(3.0), new Double(result.getSum()));
-			assertEquals(new Double(1.5), new Double(result.getAverage()));
+			assertEquals(new Double(1.5), new Double(result.getAvg()));
 			assertEquals(new Double(1.0), new Double(result.getMin()));
 			assertEquals(new Double(2.0), new Double(result.getMax()));
 			assertEquals(2, result.getCount());

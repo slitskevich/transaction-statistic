@@ -1,61 +1,73 @@
 package com.transactions.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The Class represents transaction data
+ * The Class represents transaction data.
  */
 @XmlRootElement
-public class Transaction implements Serializable, Cloneable {
-
-	private static final long serialVersionUID = 721756743894563L;
-
-	/** Transaction unique ID */
-	private int id;
-
-	/** Transaction timestamp */
-	private Long timestamp;
-
-	/** Transaction amount */
-	private Double amount;
-
-	public int getId() {
-		return id;
+public class Transaction {
+	
+	/**
+	 * Instantiates a new transaction.
+	 */
+	public Transaction() {
+		
 	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Long timestamp) {
+	
+	/**
+	 * Instantiates a new transaction and initializes it with the attributes
+	 *
+	 * @param timestamp the transaction timestamp
+	 * @param amount the transaction amount
+	 */
+	public Transaction(long timestamp, double amount) {
 		this.timestamp = timestamp;
-	}
-
-	public Double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	/**  Transaction timestamp. */
+	private Long timestamp;
+
+	/**  Transaction amount. */
+	private Double amount;
+
+	/**
+	 * Gets the timestamp.
+	 *
+	 * @return the timestamp
+	 */
+	public long getTimestamp() {
+		return timestamp;
 	}
-	
-	@Override
-	public Transaction clone() throws CloneNotSupportedException {
-		Transaction result = (Transaction) super.clone();
-		result.setAmount(amount);
-		result.setTimestamp(timestamp);
-		return result;
+
+	/**
+	 * Sets the timestamp.
+	 *
+	 * @param timestamp the new timestamp
+	 */
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	/**
+	 * Gets the amount.
+	 *
+	 * @return the amount
+	 */
+	public double getAmount() {
+		return amount;
+	}
+
+	/**
+	 * Sets the amount.
+	 *
+	 * @param amount the new amount
+	 */
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 
 	/**
@@ -65,9 +77,9 @@ public class Transaction implements Serializable, Cloneable {
 	 * @throws ValidationException if validation fails
 	 */
 	public void validate() throws ValidationException {
-		if (this.getTimestamp() == null || this.getTimestamp() < 0 || this.getTimestamp() > (new Date()).getTime()) {
+		if (timestamp == null || timestamp < 0 || timestamp > (new Date()).getTime()) {
 			throw new ValidationException("Invalid transaction timestamp");
-		} else if (this.getAmount() == null || this.getAmount() < 0) {
+		} else if (amount == null || amount < 0) {
 			throw new ValidationException("Invalid transaction amount");
 		}
 	}

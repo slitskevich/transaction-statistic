@@ -2,9 +2,6 @@ package com.transactions.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * The Class represents transaction statistic data.
  */
@@ -22,25 +19,6 @@ public class Statistic {
 	
 	/** The maximal transaction amount for the statistic period. */
 	private double max;
-	
-	/** Statistic period start time stamp */
-	private long timestamp;
-	
-	/**
-	 * Instantiates a new statistic.
-	 */
-	public Statistic() {
-		
-	}
-	
-	/**
-	 * Instantiates a new statistic with the starting timestamp
-	 *
-	 * @param timestamp the timestamp value
-	 */
-	public Statistic(long timestamp) {
-		setTimestamp(timestamp);
-	}
 	
 	/**
 	 * Appends another statistic resulting in aggregated statistic.
@@ -62,26 +40,6 @@ public class Statistic {
 		}
 	}
 	
-	/**
-	 * Appends another transaction to the statistic
-	 *
-	 * @param transaction the transaction to be appended
-	 */
-	public void append(Transaction transaction) {
-		sum += transaction.getAmount();
-		count += 1;
-		if (min != 0) {
-			min = Math.min(min, transaction.getAmount());
-		} else {
-			min = transaction.getAmount();
-		}
-		if (max != 0) {
-			max = Math.max(max, transaction.getAmount());
-		} else {
-			max = transaction.getAmount();
-		}
-	}
-
 	/**
 	 * Gets the sum.
 	 *
@@ -161,25 +119,5 @@ public class Statistic {
 	 */
 	public void setMax(double max) {
 		this.max = max;
-	}
-
-	/**
-	 * Gets the timestamp.
-	 *
-	 * @return the timestamp
-	 */
-	@JsonProperty
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	/**
-	 * Sets the timestamp.
-	 *
-	 * @param timestamp the new timestamp
-	 */
-	@JsonIgnore
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
 	}
 }

@@ -14,7 +14,7 @@ import com.transactions.model.Transaction;
 public class History {
 	
 	/** The list of statistics for required statistic period */
-	private List<Statistic> list = Collections.synchronizedList(new ArrayList<Statistic>());
+	private List<HistoryItem> list = Collections.synchronizedList(new ArrayList<HistoryItem>());
 	
 	/** The size of the statistic - the number of time units required for analysis. */
 	private int size;
@@ -47,7 +47,7 @@ public class History {
 	void init(int size, long startTimestamp) {
 		this.size = size;
 		for (int i = 0; i < size; i += 1) {
-			list.add(new Statistic(startTimestamp - i * 1000));
+			list.add(new HistoryItem(startTimestamp - i * 1000));
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class History {
 	void cleanOutdated(long startTimestamp) {
 		long start = list.get(0).getTimestamp();
 		for (long stamp = start + 1000; stamp <= startTimestamp; stamp += 1000) {
-			list.add(0, new Statistic(stamp));
+			list.add(0, new HistoryItem(stamp));
 			list.remove(list.size() - 1);
 		}
 	}
@@ -106,9 +106,9 @@ public class History {
 		synchronized (list) {
 			long periodStart = historyStart();
 			Statistic minute = new Statistic();
-			for (Statistic second : list) {
+			for (HistoryItem second : list) {
 				if (second.getTimestamp() >= periodStart) {
-					minute.append(second);
+					minute.append(second.getStatistic());
 				} else {
 					break;
 				}
@@ -148,7 +148,7 @@ public class History {
 	/**
 	 * @return the history list
 	 */
-	public List<Statistic> getList() {
+	public List<HistoryItem> getList() {
 		return list;
 	}
 }

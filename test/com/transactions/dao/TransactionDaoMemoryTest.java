@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.transactions.data.History;
-import com.transactions.model.Statistic;
+import com.transactions.data.HistoryItem;
 import com.transactions.model.Transaction;
 
 public class TransactionDaoMemoryTest {
@@ -36,10 +36,10 @@ public class TransactionDaoMemoryTest {
 		try {
 			tested.create(t1);
 			boolean found = false;
-			for (Statistic next : tested.getHistory().getList()) {
+			for (HistoryItem next : tested.getHistory().getList()) {
 				if (next.getTimestamp() == normalized) {
-					assertEquals(new Double(1.0), new Double(next.getSum()));
-					assertEquals(1, next.getCount());
+					assertEquals(new Double(1.0), new Double(next.getStatistic().getSum()));
+					assertEquals(1, next.getStatistic().getCount());
 					found = true;
 				}
 			}
@@ -59,10 +59,10 @@ public class TransactionDaoMemoryTest {
 			tested.create(t1);
 			tested.create(t1);
 			boolean found = false;
-			for (Statistic next : tested.getHistory().getList()) {
+			for (HistoryItem next : tested.getHistory().getList()) {
 				if (next.getTimestamp() == normalized) {
-					assertEquals(new Double(2.0), new Double(next.getSum()));
-					assertEquals(2, next.getCount());
+					assertEquals(new Double(2.0), new Double(next.getStatistic().getSum()));
+					assertEquals(2, next.getStatistic().getCount());
 					found = true;
 				}
 			}
